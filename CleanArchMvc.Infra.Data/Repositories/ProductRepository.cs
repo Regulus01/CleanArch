@@ -14,7 +14,7 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
     
-    public async Task<IEnumerable<Product>> GetProductAsync()
+    public async Task<IEnumerable<Product>> GetProductsAsync()
     {
         return await _context.Products.ToListAsync();
     }
@@ -24,7 +24,6 @@ public class ProductRepository : IProductRepository
         //eager loading com o include
         return await _context.Products.Include(c => c.Category).SingleOrDefaultAsync();
     }
-
     public async Task<Product> CreateAsync(Product product)
     {
         _context.Products.Add(product);

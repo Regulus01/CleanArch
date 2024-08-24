@@ -13,5 +13,9 @@
     <ItemGroup>
       <ProjectReference Include="..\CleanArchMvc.Infra.IoC\CleanArchMvc.Infra.IoC.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Categories\Index.cshtml" />
+    </ItemGroup>
 
 </Project>
