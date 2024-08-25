@@ -3,9 +3,12 @@ using CleanArchMvc.Application.Mappings;
 using CleanArchMvc.Application.Products.Commands;
 using CleanArchMvc.Application.Products.Queries;
 using CleanArchMvc.Application.Services;
+using CleanArchMvc.Domain.Account;
 using CleanArchMvc.Domain.Interfaces;
 using CleanArchMvc.Infra.Data.Context;
+using CleanArchMvc.Infra.Data.Identity;
 using CleanArchMvc.Infra.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,17 +19,34 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        AddDbContext(services, configuration);
+        AddRepositories(services);
+        AddServices(services);
+        AddMappers(services);
+        AddMediatr(services);
+        AddIdentity(services);
+        ConfigureCookie(services);
+    }
+
+    private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
+    {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), 
                 b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
         });
+    }
 
-        AddRepositories(services);
-        AddServices(services);
-        AddMappers(services);
-        AddMediatr(services);
+    private static void ConfigureCookie(IServiceCollection services)
+    {
+        services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/Login");
+    }
 
+    private static void AddIdentity(IServiceCollection services)
+    {
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
     }
 
     private static void AddMediatr(IServiceCollection services)
@@ -52,6 +72,9 @@ public static class DependencyInjection
     {
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        
+        services.AddScoped<IAuthenticate, AuthenticateService>();
+        services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
     }
 
     private static void AddRepositories(IServiceCollection services)
