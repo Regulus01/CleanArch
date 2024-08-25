@@ -16,6 +16,8 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, P
     
     public async Task<Product> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _productRepository.GetByIdAsync(request.Id);
+        var product = await _productRepository.GetByIdAsync(request.Id);
+        
+        return product;
     }
 }

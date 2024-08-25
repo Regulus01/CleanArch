@@ -22,7 +22,9 @@ public class ProductRepository : IProductRepository
     public async Task<Product?> GetByIdAsync(int? id)
     {
         //eager loading com o include
-        return await _context.Products.Include(c => c.Category).SingleOrDefaultAsync();
+        var product = await _context.Products.Include(c => c.Category).SingleOrDefaultAsync(x => x.Id == id);
+        
+        return product;
     }
     public async Task<Product> CreateAsync(Product product)
     {

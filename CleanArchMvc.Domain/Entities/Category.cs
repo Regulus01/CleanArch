@@ -7,10 +7,10 @@ public sealed class Category : EntityBase
     public string Name { get; private set; }
     
     public ICollection<Product> Products { get; set; }
-
+    
     public Category(int id, string name)
     {
-        DomainExceptionValidation.When(id <= 0, "Id must be greater than zero.");
+        DomainExceptionValidation.When(id < 0, "Id must be greater than zero.");
         Id = id;
         Validate(name);
     }
